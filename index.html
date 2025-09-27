@@ -1,0 +1,759 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Descubra Japeri: História e Natureza</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600;800&display=swap" rel="stylesheet">
+    <!-- Adiciona a biblioteca de ícones Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        /* === CONFIGURAÇÕES GERAIS E RESET === */
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            color: #333;
+            line-height: 1.6;
+            scroll-behavior: smooth;
+            background-color: #f4f4f4; /* Fundo para transições de seção */
+        }
+
+        /* === NAVEGAÇÃO === */
+        .navbar {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            padding: 15px 50px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            transition: background-color 0.4s ease, padding 0.4s ease;
+        }
+
+        .navbar.scrolled {
+            background-color: #6c5ce7;
+            padding: 10px 50px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .nav-logo {
+            font-weight: 800;
+            font-size: 1.8em;
+            color: white;
+            text-decoration: none;
+        }
+
+        .nav-logo img {
+            height: 70px; /* Altura do logo */
+            width: 70px; /* Largura do logo para formar um círculo */
+            border-radius: 50%; /* Deixa a imagem redonda */
+            object-fit: cover; /* Garante que a imagem preencha o círculo sem distorcer */
+            transition: height 0.4s ease, width 0.4s ease;
+            vertical-align: middle; /* Alinha a imagem verticalmente */
+        }
+
+        .navbar.scrolled .nav-logo img {
+            height: 50px; /* Logo menor quando a página rola */
+            width: 50px;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            margin-left: 25px;
+            font-weight: 600;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #d1c4e9;
+        }
+
+        /* Estilo para as Seções de Conteúdo (Parallax) */
+        .secao-parallax {
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center; 
+            background-position: center;
+            background-repeat: no-repeat; /* Garante que a imagem não se repita */
+            background-size: contain;
+            position: relative;
+            text-align: center;
+            color: #fff;
+            padding: 20px;
+        }
+
+        /* Camada de sobreposição escura para o texto */
+        .secao-parallax::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0) 60%); /* Gradiente de baixo para cima */
+            z-index: 1;
+        }
+
+        .conteudo {
+            z-index: 2;
+            max-width: 800px;
+        }
+        
+        /* Animação de entrada */
+        .conteudo {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+
+        .conteudo.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .conteudo h1 {
+            font-size: clamp(2.5em, 6vw, 4.5em); /* Fonte responsiva */
+            margin-bottom: 10px;
+            font-weight: 800;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+            transition: transform 0.3s ease, color 0.3s ease;
+        }
+
+        .conteudo p {
+            font-size: clamp(1em, 2.5vw, 1.4em); /* Fonte responsiva */
+            font-weight: 300;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+            transition: transform 0.3s ease, color 0.3s ease;
+        }
+
+        .cta-button {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 25px;
+            background-color: #6c5ce7;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            border-radius: 50px;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .cta-button:hover {
+            background-color: #5a4ab9;
+            transform: translateY(-3px);
+        }
+
+        /* Efeito de hover nos textos das seções parallax */
+        .secao-parallax .conteudo h1:hover,
+        .secao-parallax .conteudo p:hover {
+            transform: scale(1.03);
+            color: #fff;
+            cursor: default;
+            text-shadow: 0 0 15px rgba(255, 255, 255, 0.5);
+        }
+
+        /* === SEÇÃO DO MAPA === */
+        #secao-mapa {
+            background-color: white;
+            color: #333;
+            height: auto;
+            min-height: 50vh;
+            padding: 60px 20px;
+        }
+
+        #mapa-iframe {
+            width: 100%;
+            height: 450px;
+            border: 0;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        #secao-mapa h2 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            color: #6c5ce7; /* Cor de destaque */
+            font-weight: 600;
+        }
+
+        #secao-mapa .conteudo {
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        /* === SEÇÃO DE TEXTO SIMPLES (GEOGRAFIA) === */
+        .secao-texto-simples {
+            background-color: #fff;
+            padding: 80px 20px;
+            text-align: left;
+        }
+
+        .secao-texto-simples .conteudo {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .secao-texto-simples h1 {
+            color: #333;
+            margin-bottom: 20px;
+            font-size: 2.8em;
+        }
+
+        /* === SLIDER DE CULTURA === */
+        .slider-cultura-wrapper {
+            position: relative;
+            max-width: 900px; /* Ajuste a largura conforme necessário */
+            margin: 40px auto 0;
+            overflow: hidden; /* Esconde os slides que não estão visíveis */
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .slider-cultura {
+            display: flex;
+            transition: transform 0.5s ease-in-out; /* Animação de transição */
+        }
+
+        .slide-cultura {
+            min-width: 100%;
+            box-sizing: border-box;
+            display: flex;
+            background-color: #fff;
+        }
+
+        .slide-imagem {
+            flex: 0 0 45%; /* A imagem ocupa 45% do espaço */
+        }
+
+        .slide-imagem img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease-in-out; /* Adiciona transição para o zoom */
+        }
+
+        .slide-imagem img:hover {
+            transform: scale(1.05); /* Efeito de zoom sutil ao passar o mouse */
+            display: block;
+        } 
+ 
+        .slide-texto {
+            flex: 1; /* O texto ocupa o restante do espaço */
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .slide-texto h3 {
+            color: #6c5ce7;
+            margin-top: 0;
+            font-size: 1.6em;
+        }
+
+        .slider-dots {
+            text-align: center;
+            padding: 10px 0;
+            position: absolute;
+            bottom: 5px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .dot {
+            cursor: pointer;
+            height: 12px;
+            width: 12px;
+            margin: 0 5px;
+            background-color: #bbb;
+            border-radius: 50%;
+            display: inline-block;
+            transition: background-color 0.3s ease;
+        }
+
+        .dot.active {
+            background-color: #6c5ce7;
+        }
+
+        .slider-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 10px;
+            box-sizing: border-box;
+            pointer-events: none; /* Permite clicar através dos botões se não estiverem sobre eles */
+        }
+
+        .slider-nav button {
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 45px;
+            height: 45px;
+            font-size: 1.5em;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            pointer-events: all; /* Reativa os eventos de clique nos botões */
+        }
+
+        .slider-nav button:hover {
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+
+        .slider-nav button:disabled {
+            background-color: rgba(0, 0, 0, 0.2);
+            cursor: not-allowed;
+        }
+
+        /* === SEÇÃO DA GALERIA === */
+        .secao-galeria {
+            background-color: #f0f2f5;
+            padding: 60px 20px;
+            text-align: center;
+        }
+
+        .secao-galeria h1 {
+            color: #333;
+        }
+
+        .secao-galeria .conteudo {
+            margin: 0 auto;
+        }
+
+        .secao-galeria p {
+            color: #666;
+        }
+
+        .galeria-container {
+            max-width: 900px;
+            margin: 30px auto 0;
+        }
+
+        .imagem-principal {
+            margin-bottom: 15px;
+        }
+
+        .imagem-principal img {
+            width: 100%;
+            height: 500px;
+            object-fit: cover;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+        }
+
+        .galeria-thumbnails {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .thumbnail {
+            width: 100px;
+            height: 75px;
+            object-fit: cover;
+            border-radius: 5px;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+
+        .thumbnail:hover {
+            transform: scale(1.1);
+        }
+
+        .thumbnail.active {
+            border-color: #6c5ce7;
+        }
+
+        /* === RODAPÉ === */
+        .site-footer {
+            background-color: #2c3e50;
+            color: #bdc3c7;
+            padding: 50px 20px 20px;
+        }
+
+        .footer-container {
+            max-width: 1100px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 30px;
+            text-align: center;
+            padding-bottom: 40px;
+            border-bottom: 1px solid #34495e;
+        }
+
+        .footer-contato, .footer-redes {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .site-footer h3 {
+            color: #ecf0f1;
+            font-weight: 600;
+            margin-bottom: 15px;
+            font-size: 1.4em;
+        }
+
+        .footer-contato p {
+            margin: 5px 0;
+            font-size: 1em;
+        }
+
+        .footer-contato i {
+            margin-right: 8px;
+            color: #6c5ce7;
+        }
+
+        .footer-redes a {
+            color: #bdc3c7;
+            font-size: 1.8em;
+            margin: 0 12px;
+            transition: color 0.3s ease, transform 0.3s ease;
+            display: inline-block;
+        }
+
+        .footer-redes a:hover {
+            color: #6c5ce7;
+            transform: translateY(-3px);
+        }
+
+        .footer-copyright {
+            text-align: center;
+            padding-top: 20px;
+            font-size: 0.9em;
+        }
+
+        /* === RESPONSIVIDADE === */
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 10px 20px;
+                flex-direction: column;
+            }
+            .navbar.scrolled {
+                padding: 10px 20px;
+            }
+            .nav-links {
+                margin-top: 10px;
+            }
+            .nav-links a {
+                margin: 0 10px;
+            }
+            .conteudo h1 {
+                font-size: 2.8em;
+            }
+            .conteudo p {
+                font-size: 1.1em;
+            }
+            .imagem-principal img {
+                height: 300px;
+            }
+            .galeria-thumbnails {
+                flex-wrap: wrap; /* Permite que as miniaturas quebrem a linha */
+            }
+            .thumbnail {
+                width: 80px;
+                height: 60px;
+            }
+            .slide-cultura {
+                flex-direction: column; /* Empilha imagem e texto */
+                height: auto;
+            }
+            .slide-imagem {
+                flex-basis: 200px; /* Altura fixa para a imagem no mobile */
+            }
+            .slide-texto {
+                padding: 20px;
+                text-align: left;
+            }
+            .footer-container {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <a href="#inicio" class="nav-logo">
+            <img src="imagens/logo.jpg" alt="Logo de Japeri">
+        </a>
+        <div class="nav-links">
+            <a href="#geografia">Geografia</a>
+            <a href="#natureza">Natureza</a>
+            <a href="#historia">História</a>
+            <a href="#secao-mapa">Mapa</a>
+        </div>
+    </nav>
+
+    <header id="inicio" class="secao-parallax" style="background-image: url('imagens/banner.jpg');">
+        <div class="conteudo">
+            <h1>Bem-Vindo a Japeri</h1>
+            <p>Onde o eco da primeira ferrovia do Brasil encontra o verde exuberante da Mata Atlântica. Uma cidade de contrastes, pronta para ser descoberta.</p>
+            <a href="#historia" class="cta-button">Explore &#8595;</a>
+        </div>
+    </header>
+
+    <main>
+        <section id="geografia" class="secao-texto-simples">
+            <div class="conteudo">
+                <h1>Informações Geográficas sobre Japeri</h1>
+                <p>O município de Japeri, localizado na Baixada Fluminense, faz parte da Região Metropolitana do Rio de Janeiro. Sua área territorial é de aproximadamente 81,7 km², inserida no bioma da Mata Atlântica. A cidade está situada a cerca de 30 metros de altitude em relação ao nível do mar e possui uma das menores extensões territoriais entre os municípios fluminenses.</p>
+
+                <p>De acordo com o Censo de 2022, Japeri tem 96.289 habitantes, enquanto a estimativa populacional de 2024 aponta para cerca de 102.149 pessoas, resultando em uma densidade demográfica superior a 1.170 habitantes por km². Os moradores são chamados de japerienses.</p>
+
+                <p>Criado oficialmente em 1991, após sua emancipação de Nova Iguaçu, o município é marcado pelo predomínio de áreas urbanas, mas ainda conserva espaços de mata nativa e áreas rurais, especialmente na região de Jaceruba.</p>
+            </div>
+        </section>
+        
+        <section id="natureza" class="secao-galeria">
+            <div class="conteudo">
+                <h1>A Riqueza da Mata Atlântica</h1>
+                <p>Mergulhe nas trilhas e cachoeiras do nosso Parque Municipal. Um refúgio verde, perfeito para o ecoturismo e aventura.</p>
+
+                <div class="galeria-container">
+                    <div class="imagem-principal">
+                        <img id="imagem-galeria-principal" src="imagens/cachoeira.jpg" alt="Cachoeira em Japeri" loading="lazy">
+                    </div>
+                    <div class="galeria-thumbnails">
+                        <img src="imagens/cachoeira.jpg" alt="Cachoeira em Japeri" class="thumbnail active" loading="lazy">
+                        <img src="imagens/picodacoragem.jpg" alt="Pico da Coragem" class="thumbnail" loading="lazy">
+                        <img src="imagens/vistapanoramica.jpg" alt="Vista panorâmica de Japeri" class="thumbnail" loading="lazy">
+                        <img src="imagens/trilhanamata.jpg" alt="Trilha na mata" class="thumbnail" loading="lazy">
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="historia" class="secao-texto-simples">
+            <div class="conteudo">
+                <h1>História e Cultura</h1>
+                <p>Japeri é uma cidade rica em marcos históricos e culturais. Desde a pioneira Estação Ferroviária, que deu início à primeira ferrovia do Brasil, até a serena Igreja de Nossa Senhora da Conceição em Jaceruba. Explore também o único Campo de Golfe público do país e as belezas naturais da Área de Proteção Ambiental (APA) de Jaceruba, que contam a história e a diversidade da nossa região.</p>
+
+                <!-- Início do Slider de Cultura -->
+                <div class="slider-cultura-wrapper">
+                    <div class="slider-cultura">
+                        <!-- Slide 1: Estação Ferroviária -->
+                        <div class="slide-cultura" data-slide-index="0">
+                            <div class="slide-imagem">
+                                <img src="imagens/Estação.jpg" alt="Estação Ferroviária de Japeri" loading="lazy">
+                            </div>
+                            <div class="slide-texto">
+                                <h3>Estação Ferroviária de Japeri</h3>
+                                <p>Marco inicial da primeira ferrovia do Brasil, a Estrada de Ferro Mauá. Sua arquitetura histórica é um testemunho vivo do desenvolvimento industrial do país no século XIX.</p>
+                            </div>
+                        </div>
+                        <!-- Slide 2: Igreja de Jaceruba -->
+                        <div class="slide-cultura" data-slide-index="1">
+                            <div class="slide-imagem">
+                                <img src="imagens/Paroquia-Nossa-Senhora-da-Conceicao.jpg" alt="Igreja de Nossa Senhora da Conceição de Jaceruba" loading="lazy">
+                            </div>
+                            <div class="slide-texto">
+                                <h3>Igreja de Jaceruba</h3>
+                                <p>A Igreja de Nossa Senhora da Conceição, datada do século XVIII, é um dos mais importantes patrimônios históricos e religiosos da região, com sua arquitetura colonial preservada.</p>
+                            </div>
+                        </div>
+                        <!-- Slide 3: Campo de Golfe -->
+                        <div class="slide-cultura" data-slide-index="2">
+                            <div class="slide-imagem">
+                                <img src="imagens/golfe.jpg" alt="Campo de Golfe de Japeri" loading="lazy">
+                            </div>
+                            <div class="slide-texto">
+                                <h3>Campo de Golfe de Japeri</h3>
+                                <p>Conhecido por ser o primeiro campo de golfe público do Brasil, oferece uma oportunidade única para a prática do esporte em meio a uma paisagem inspiradora, promovendo inclusão social.</p>
+                            </div>
+                        </div>
+                        <!-- Slide 4: APA de Jaceruba -->
+                        <div class="slide-cultura" data-slide-index="3">
+                            <div class="slide-imagem">
+                                <img src="imagens/APA.jpg" alt="Região de Jaceruba (APA)" loading="lazy">
+                            </div>
+                            <div class="slide-texto">
+                                <h3>APA de Jaceruba</h3>
+                                <p>A Área de Proteção Ambiental de Jaceruba é um santuário de biodiversidade da Mata Atlântica, com rios, cachoeiras e trilhas, essencial para a conservação ambiental e o ecoturismo na região.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Indicadores de Navegação (Bolinhas) -->
+                    <div class="slider-dots"></div>
+
+                    <!-- Navegação do Slider -->
+                    <div class="slider-nav">
+                        <button id="prev-slide" aria-label="Slide Anterior">&#10094;</button>
+                        <button id="next-slide" aria-label="Próximo Slide">&#10095;</button>
+                    </div>
+                </div>
+                <!-- Fim do Slider de Cultura -->
+
+            </div>
+        </section>
+
+        <section id="secao-mapa">
+            <div class="conteudo">
+                <h2>Localize a Nossa Cidade</h2>
+                <p style="color: #666; font-size: 1.1em;">Veja no mapa onde estamos e comece a planejar sua visita aos pontos turísticos de Japeri.</p>
+                
+                <!-- Iframe do Google Maps corrigido para funcionar sem chave de API -->
+                <iframe id="mapa-iframe" loading="lazy" allowfullscreen
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d58788.67950352552!2d-43.68285452946279!3d-22.93944837563065!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x9923880a1871fd%3A0x6a213567027d117a!2sJaperi%2C%20RJ!5e0!3m2!1spt-BR!2sbr!4v1700000000000!5m2!1spt-BR!2sbr">
+                </iframe>
+            </div>
+        </section>
+    </main>
+
+    <footer class="site-footer">
+        <div class="footer-container">
+            <div class="footer-contato">
+                <h3>Contato</h3>
+                <p><i class="fa-solid fa-envelope"></i> turismo@japeri.rj.gov.br</p>
+                <p><i class="fa-solid fa-phone"></i> (21) 99999-9999</p>
+            </div>
+            <div class="footer-redes">
+                <h3>Siga-nos</h3>
+                <a href="https://www.facebook.com/photo/?fbid=1242492241249182&set=a.588865133278566" target="_blank" rel="noopener noreferrer" aria-label="Facebook"><i class="fa-brands fa-facebook-f"></i></a>
+                <a href="https://www.instagram.com/prefeituradejaperi?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==" target="_blank" rel="noopener noreferrer" aria-label="Instagram"><i class="fa-brands fa-instagram"></i></a>
+                <a href="https://x.com/prefjaperi" target="_blank" rel="noopener noreferrer" aria-label="Twitter"><i class="fa-brands fa-twitter"></i></a>
+            </div>
+        </div>
+        <div class="footer-copyright">
+            <p>&copy; 2024 Descubra Japeri. Todos os direitos reservados.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Efeito da barra de navegação ao rolar
+        const nav = document.querySelector('.navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+        });
+
+        // Animação de entrada dos conteúdos ao rolar
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.conteudo').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Interatividade da Galeria de Fotos
+        const imagemPrincipal = document.getElementById('imagem-galeria-principal');
+        const thumbnails = document.querySelectorAll('.thumbnail');
+
+        thumbnails.forEach(thumb => {
+            thumb.addEventListener('click', function() {
+                // Remove a classe 'active' de todas as miniaturas
+                thumbnails.forEach(t => t.classList.remove('active'));
+                
+                // Adiciona a classe 'active' na miniatura clicada
+                this.classList.add('active');
+                
+                // Troca a imagem principal
+                imagemPrincipal.src = this.src;
+            });
+        });
+
+        // Lógica do Slider de Cultura
+        const sliderWrapper = document.querySelector('.slider-cultura-wrapper');
+        const sliderCultura = document.querySelector('.slider-cultura');
+        const prevBtn = document.getElementById('prev-slide');
+        const nextBtn = document.getElementById('next-slide');
+        const slides = document.querySelectorAll('.slide-cultura');
+        const dotsContainer = document.querySelector('.slider-dots');
+        
+        let autoplayInterval;
+        
+        let currentIndex = 0;
+        const totalSlides = slides.length;
+
+        // Cria os indicadores (bolinhas)
+        for (let i = 0; i < totalSlides; i++) {
+            const dot = document.createElement('span');
+            dot.classList.add('dot');
+            dot.dataset.index = i;
+            dot.addEventListener('click', (e) => {
+                currentIndex = parseInt(e.target.dataset.index);
+                updateSlider();
+                resetAutoplay();
+            });
+            dotsContainer.appendChild(dot);
+        }
+        const dots = document.querySelectorAll('.dot');
+
+        function updateSlider() {
+            sliderCultura.style.transform = `translateX(-${currentIndex * 100}%)`;
+            // Atualiza a bolinha ativa
+            dots.forEach(dot => dot.classList.remove('active'));
+            dots[currentIndex].classList.add('active');
+
+            // Atualiza o estado dos botões de seta
+            // Removido o disable para permitir o loop infinito com os botões
+            // prevBtn.disabled = currentIndex === 0;
+            // nextBtn.disabled = currentIndex === totalSlides - 1;
+        }
+
+        function nextSlide() {
+            currentIndex = (currentIndex + 1) % totalSlides; // Loop para o início
+            updateSlider();
+        }
+
+        function prevSlide() {
+            currentIndex = (currentIndex - 1 + totalSlides) % totalSlides; // Loop para o final
+            updateSlider();
+        }
+
+        function startAutoplay() {
+            autoplayInterval = setInterval(nextSlide, 5000); // Avança a cada 5 segundos
+        }
+
+        function stopAutoplay() {
+            clearInterval(autoplayInterval);
+        }
+
+        function resetAutoplay() {
+            stopAutoplay();
+            startAutoplay();
+        }
+
+        nextBtn.addEventListener('click', () => {
+            nextSlide();
+            resetAutoplay();
+        });
+
+        prevBtn.addEventListener('click', () => {
+            prevSlide();
+            resetAutoplay();
+        });
+
+        // Pausa o autoplay quando o mouse está sobre o slider
+        sliderWrapper.addEventListener('mouseenter', stopAutoplay);
+        sliderWrapper.addEventListener('mouseleave', startAutoplay);
+
+        // Inicialização
+        updateSlider();
+        startAutoplay();
+
+    </script>
+
+</body>
+</html>
